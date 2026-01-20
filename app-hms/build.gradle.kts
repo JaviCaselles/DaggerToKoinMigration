@@ -39,6 +39,13 @@ dependencies {
     implementation(project(":feature-b"))
     implementation(project(":data:repository"))
     implementation(project(":data:model"))
+    implementation(project(":data:api"))
+
+    // Network (needed for Dagger components extending modules in app-legacy)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logging)
 
     // Dagger
     implementation(libs.dagger.core)

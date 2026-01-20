@@ -1,13 +1,21 @@
 package com.example.poc.gms
 
+import android.content.Context
 import com.example.poc.BaseApplication
+import com.example.poc.common.di.DI
+import com.example.poc.common.di.DaggerDependencyProvider
+import com.example.poc.common.di.ViewModelFactory
+import com.example.poc.data.api.ApiService
 import com.example.poc.di.components.AppComponent
 import com.example.poc.di.modules.ApiModule
 import com.example.poc.di.modules.AppModule
 import com.example.poc.di.modules.UseCaseModule
 import com.example.poc.data.di.RepositoryModule
+import com.example.poc.data.repository.ProductRepository
+import com.example.poc.data.repository.UserRepository
 import com.example.poc.gms.di.components.DaggerStradivariusGoogleMarketAppComponent
-
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
 
 
 class GmsApplication : BaseApplication() {
@@ -19,13 +27,24 @@ class GmsApplication : BaseApplication() {
     override fun injectApplication() {
         val component = DaggerStradivariusGoogleMarketAppComponent.builder()
             .application(this)
-            .appModule(AppModule())
             .apiModule(ApiModule())
+            .appModule(AppModule())
             .repositoryModule(RepositoryModule())
             .useCaseModule(UseCaseModule())
             .build()
         
         component.inject(this)
         appComponent = component
+
+        val provider = DaggerDependencyProvider().configure {
+            register(Context::class.java) { this@GmsApplication }
+            register(ApiService::class.java) { component.apiService() }
+            register(UserRepository::class.java) { component.userRepository() }
+            register(ProductRepository::class.java) { component.productRepository() }
+            register(OkHttpClient::class.java) { component.okHttpClient() }
+            register(Retrofit::class.java) { component.retrofit() }
+            register(ViewModelFactory::class.java) { component.viewModelFactory() }
+        }
+        DI.initialize(provider)
     }
 }

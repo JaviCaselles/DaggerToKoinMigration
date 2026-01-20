@@ -70,6 +70,10 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "gradle-plugin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
+[libraries.junit]
+module = "junit:junit"
+version = "4.13.2"
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "gradle-plugin" }

@@ -3,7 +3,6 @@ package com.example.poc.feature.c.di
 import androidx.lifecycle.ViewModel
 import com.example.poc.common.di.ViewModelKey
 import com.example.poc.feature.c.domain.AggregatedUseCase
-import com.example.poc.feature.c.ui.AggregatedActivity
 import com.example.poc.feature.c.ui.AggregatedViewModel
 import com.example.poc.feature.a.domain.GetUsersUseCase
 import com.example.poc.feature.b.domain.GetProductsUseCase
@@ -18,8 +17,7 @@ class FeatureCModule {
 
     @Module
     interface FeatureCDeclarations {
-        @ContributesAndroidInjector
-        fun bindAggregatedActivity(): AggregatedActivity
+
 
         @Binds
         @IntoMap

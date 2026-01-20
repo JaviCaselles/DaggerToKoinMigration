@@ -25,4 +25,5 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.dagger.core)
     implementation(libs.androidx.lifecycle.viewmodel)
+    testImplementation(libs.junit)
 }

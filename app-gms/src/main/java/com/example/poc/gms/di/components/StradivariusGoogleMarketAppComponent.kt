@@ -12,7 +12,6 @@ import com.example.poc.feature.b.di.FeatureBModule
 import com.example.poc.feature.c.di.FeatureCModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
@@ -20,8 +19,8 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AndroidSupportInjectionModule::class,
-        AppModule::class, // AppModule includes Api, UseCase
-        RepositoryModule::class, // Explicitly included in Reference
+        AppModule::class,
+        RepositoryModule::class,
         FeatureAModule::class,
         FeatureBModule::class,
         FeatureCModule::class
@@ -32,9 +31,14 @@ interface StradivariusGoogleMarketAppComponent : AppComponent {
     fun inject(application: GmsApplication)
 
     @Component.Builder
-    interface Builder : AppComponent.Builder<Builder> {
+    interface Builder {
         @BindsInstance
-        fun application(application: GmsApplication): Builder
+        fun application(application: Application): Builder
+
+        fun appModule(module: AppModule): Builder
+        fun apiModule(module: ApiModule): Builder
+        fun repositoryModule(module: RepositoryModule): Builder
+        fun useCaseModule(module: UseCaseModule): Builder
         
         fun build(): StradivariusGoogleMarketAppComponent
     }

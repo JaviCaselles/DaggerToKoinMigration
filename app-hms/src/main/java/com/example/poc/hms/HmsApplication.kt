@@ -13,6 +13,9 @@ import com.example.poc.hms.di.HmsDIManager
  * 
  * Equivalente a StradivariusHMSApplication en el proyecto real.
  */
+import com.example.poc.common.di.DI
+import com.example.poc.common.di.DaggerDependencyProvider
+
 class HmsApplication : BaseApplication() {
 
     private var daggerComponent: AppComponent? = null
@@ -29,7 +32,20 @@ class HmsApplication : BaseApplication() {
     }
 
     override fun injectApplication() {
-        getAppComponent().inject(this)
+        val component = getAppComponent()
+        component.inject(this)
+
+        // Inicializar DependencyProvider
+        val provider = DaggerDependencyProvider().configure {
+            register(android.content.Context::class.java) { this@HmsApplication }
+            register(com.example.poc.data.api.ApiService::class.java) { component.apiService() }
+            register(com.example.poc.data.repository.UserRepository::class.java) { component.userRepository() }
+            register(com.example.poc.data.repository.ProductRepository::class.java) { component.productRepository() }
+            register(okhttp3.OkHttpClient::class.java) { component.okHttpClient() }
+            register(retrofit2.Retrofit::class.java) { component.retrofit() }
+            register(com.example.poc.common.di.ViewModelFactory::class.java) { component.viewModelFactory() }
+        }
+        DI.initialize(provider)
     }
 
     override fun setupDependencyInjection() {
