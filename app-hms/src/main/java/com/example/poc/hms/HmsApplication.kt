@@ -50,8 +50,15 @@ class HmsApplication : BaseApplication() {
         }
 
         // Inicializar Koin
-        org.koin.core.context.startKoin {
+        startKoin {
             androidContext(this@HmsApplication)
+            modules(
+                com.example.poc.data.di.repositoryKoinModule,
+                // Legacy Bridge: Expose Dagger deps to Koin
+                org.koin.dsl.module {
+                    single { component.apiService() }
+                }
+            )
         }
 
         // Configurar Hybrid Provider (Koin -> Dagger)

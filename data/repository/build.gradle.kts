@@ -25,6 +25,7 @@ android {
 dependencies {
     implementation(project(":data:model"))
     implementation(project(":data:api"))
+    implementation(project(":common-kotlin"))
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.core)
@@ -36,6 +37,9 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.gson)
 
+    // Koin
+    implementation(libs.koin.core)
+    
     // Dagger
     implementation(libs.dagger.core)
     ksp(libs.dagger.compiler)

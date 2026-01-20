@@ -13,6 +13,7 @@ import com.example.poc.di.modules.ApiModule
 import com.example.poc.di.modules.AppModule
 import com.example.poc.di.modules.UseCaseModule
 import com.example.poc.data.di.RepositoryModule
+import com.example.poc.data.di.repositoryKoinModule
 import com.example.poc.data.repository.ProductRepository
 import com.example.poc.data.repository.UserRepository
 import com.example.poc.gms.di.components.DaggerStradivariusGoogleMarketAppComponent
@@ -20,6 +21,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
 
 class GmsApplication : BaseApplication() {
@@ -54,7 +56,13 @@ class GmsApplication : BaseApplication() {
         // Inicializar Koin
         startKoin {
             androidContext(this@GmsApplication)
-            // modules( /* módulos de Koin futuros */ )
+            modules(
+                repositoryKoinModule,
+                // Legacy Bridge: Expose Dagger deps to Koin
+                module {
+                    single { component.apiService() }
+                }
+            )
         }
 
         // Configurar Hybrid Provider (Koin -> Dagger)
