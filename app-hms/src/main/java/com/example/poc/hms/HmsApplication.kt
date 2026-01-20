@@ -15,6 +15,8 @@ import com.example.poc.hms.di.HmsDIManager
  */
 import com.example.poc.common.di.DI
 import com.example.poc.common.di.DaggerDependencyProvider
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class HmsApplication : BaseApplication() {
 
@@ -36,7 +38,8 @@ class HmsApplication : BaseApplication() {
         component.inject(this)
 
         // Inicializar DependencyProvider
-        val provider = DaggerDependencyProvider().configure {
+        // Inicializar Dagger Provider (Legacy/Fallback)
+        val daggerProvider = DaggerDependencyProvider().configure {
             register(android.content.Context::class.java) { this@HmsApplication }
             register(com.example.poc.data.api.ApiService::class.java) { component.apiService() }
             register(com.example.poc.data.repository.UserRepository::class.java) { component.userRepository() }
@@ -45,7 +48,20 @@ class HmsApplication : BaseApplication() {
             register(retrofit2.Retrofit::class.java) { component.retrofit() }
             register(com.example.poc.common.di.ViewModelFactory::class.java) { component.viewModelFactory() }
         }
-        DI.initialize(provider)
+
+        // Inicializar Koin
+        org.koin.core.context.startKoin {
+            androidContext(this@HmsApplication)
+        }
+
+        // Configurar Hybrid Provider (Koin -> Dagger)
+        val koinProvider = com.example.poc.common.di.KoinDependencyProvider()
+        val hybridProvider = com.example.poc.common.di.HybridDependencyProvider(
+            koinProvider = koinProvider,
+            secondaryProvider = daggerProvider
+        )
+
+        DI.initialize(hybridProvider)
     }
 
     override fun setupDependencyInjection() {

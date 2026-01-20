@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.poc.BaseApplication
 import com.example.poc.common.di.DI
 import com.example.poc.common.di.DaggerDependencyProvider
+import com.example.poc.common.di.HybridDependencyProvider
+import com.example.poc.common.di.KoinDependencyProvider
 import com.example.poc.common.di.ViewModelFactory
 import com.example.poc.data.api.ApiService
 import com.example.poc.di.components.AppComponent
@@ -16,6 +18,8 @@ import com.example.poc.data.repository.UserRepository
 import com.example.poc.gms.di.components.DaggerStradivariusGoogleMarketAppComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 
 class GmsApplication : BaseApplication() {
@@ -36,7 +40,8 @@ class GmsApplication : BaseApplication() {
         component.inject(this)
         appComponent = component
 
-        val provider = DaggerDependencyProvider().configure {
+        // Inicializar Dagger Provider (Legacy/Fallback)
+        val daggerProvider = DaggerDependencyProvider().configure {
             register(Context::class.java) { this@GmsApplication }
             register(ApiService::class.java) { component.apiService() }
             register(UserRepository::class.java) { component.userRepository() }
@@ -45,6 +50,20 @@ class GmsApplication : BaseApplication() {
             register(Retrofit::class.java) { component.retrofit() }
             register(ViewModelFactory::class.java) { component.viewModelFactory() }
         }
-        DI.initialize(provider)
+
+        // Inicializar Koin
+        startKoin {
+            androidContext(this@GmsApplication)
+            // modules( /* módulos de Koin futuros */ )
+        }
+
+        // Configurar Hybrid Provider (Koin -> Dagger)
+        val koinProvider = KoinDependencyProvider()
+        val hybridProvider = HybridDependencyProvider(
+            koinProvider = koinProvider,
+            secondaryProvider = daggerProvider
+        )
+
+        DI.initialize(hybridProvider)
     }
 }

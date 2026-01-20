@@ -53,4 +53,7 @@ dependencies {
     implementation(libs.dagger.android.support)
     ksp(libs.dagger.compiler)
     ksp(libs.dagger.android.processor)
+    
+    // Koin
+    implementation(libs.koin.android)
 }
