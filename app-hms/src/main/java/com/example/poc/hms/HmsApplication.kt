@@ -1,20 +1,21 @@
 package com.example.poc.hms
 
+import android.content.Context
 import com.example.poc.BaseApplication
+import com.example.poc.common.di.DI
+import com.example.poc.common.di.DaggerDependencyProvider
+import com.example.poc.common.di.DependencyInjector
+import com.example.poc.common.di.HybridDependencyProvider
+import com.example.poc.common.di.KoinDependencyProvider
+import com.example.poc.common.di.ViewModelFactory
+import com.example.poc.data.api.di.networkKoinModule
+import com.example.poc.data.di.repositoryKoinModule
+import com.example.poc.data.repository.ProductRepository
+import com.example.poc.data.repository.UserRepository
 import com.example.poc.di.components.AppComponent
 import com.example.poc.di.components.DaggerAppComponent
 import com.example.poc.di.modules.ApiModule
-
-import com.example.poc.di.modules.UseCaseModule
 import com.example.poc.hms.di.HmsDIManager
-
-/**
- * Application para el flavor HMS (Huawei Mobile Services).
- * 
- * Equivalente a StradivariusHMSApplication en el proyecto real.
- */
-import com.example.poc.common.di.DI
-import com.example.poc.common.di.DaggerDependencyProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -37,33 +38,26 @@ class HmsApplication : BaseApplication() {
         val component = getAppComponent()
         component.inject(this)
 
-        // Inicializar DependencyProvider
         // Inicializar Dagger Provider (Legacy/Fallback)
         val daggerProvider = DaggerDependencyProvider().configure {
-            register(android.content.Context::class.java) { this@HmsApplication }
-            register(com.example.poc.data.api.ApiService::class.java) { component.apiService() }
-            register(com.example.poc.data.repository.UserRepository::class.java) { component.userRepository() }
-            register(com.example.poc.data.repository.ProductRepository::class.java) { component.productRepository() }
-            register(okhttp3.OkHttpClient::class.java) { component.okHttpClient() }
-            register(retrofit2.Retrofit::class.java) { component.retrofit() }
-            register(com.example.poc.common.di.ViewModelFactory::class.java) { component.viewModelFactory() }
+            register(Context::class.java) { this@HmsApplication }
+            register(UserRepository::class.java) { component.userRepository() }
+            register(ProductRepository::class.java) { component.productRepository() }
+            register(ViewModelFactory::class.java) { component.viewModelFactory() }
         }
 
         // Inicializar Koin
         startKoin {
             androidContext(this@HmsApplication)
             modules(
-                com.example.poc.data.di.repositoryKoinModule,
-                // Legacy Bridge: Expose Dagger deps to Koin
-                org.koin.dsl.module {
-                    single { component.apiService() }
-                }
+                networkKoinModule,
+                repositoryKoinModule,
             )
         }
 
         // Configurar Hybrid Provider (Koin -> Dagger)
-        val koinProvider = com.example.poc.common.di.KoinDependencyProvider()
-        val hybridProvider = com.example.poc.common.di.HybridDependencyProvider(
+        val koinProvider = KoinDependencyProvider()
+        val hybridProvider = HybridDependencyProvider(
             koinProvider = koinProvider,
             secondaryProvider = daggerProvider
         )
@@ -75,7 +69,7 @@ class HmsApplication : BaseApplication() {
         super.setupDependencyInjection()
         // DIManagers específicos de HMS
         HmsDIManager.setDependencyInjector(
-            object : com.example.poc.common.di.DependencyInjector<AppComponent> {
+            object : DependencyInjector<AppComponent> {
                 override fun getAppComponent() = this@HmsApplication.getAppComponent()
             }
         )
@@ -83,17 +77,10 @@ class HmsApplication : BaseApplication() {
 
     override fun onDependencyInjectionComplete() {
         super.onDependencyInjectionComplete()
-        // Inicializaciones específicas de HMS
-        // Por ejemplo: Huawei Push Kit, Analytics, etc.
     }
 
-    /**
-     * Limpia el grafo de Dagger y lo recrea.
-     * Útil para logout o cambios de configuración.
-     */
     fun clear() {
         daggerComponent = null
-        getAppComponent() // Recrear
+        getAppComponent()
     }
 }
-
