@@ -7,9 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.poc.data.model.User
 import com.example.poc.feature.a.domain.GetUsersUseCase
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class UserListViewModel @Inject constructor(
+class UserListViewModel(
     private val getUsersUseCase: GetUsersUseCase
 ) : ViewModel() {
 

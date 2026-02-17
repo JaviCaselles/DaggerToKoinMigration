@@ -1,74 +1,24 @@
 package com.example.poc
 
 import android.app.Application
-import com.example.poc.common.di.DependencyInjector
-import com.example.poc.di.DIManager
-import com.example.poc.di.components.AppComponent
-
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import com.example.poc.common.di.DI
+import com.example.poc.common.di.KoinDependencyProvider
 
 /**
- * Application base que configura Dagger.
- * 
- * Equivalente a InditexApplication en el proyecto real.
- * Las applications concretas (GMS/HMS) heredan de esta.
+ * Base Application class.
+ * Provides common initialization for both GMS and HMS flavors.
+ * Now fully powered by Koin — no Dagger dependency.
  */
-abstract class BaseApplication : Application(), HasAndroidInjector {
-
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
-
-    override fun androidInjector(): AndroidInjector<Any> = androidInjector
-
-    /**
-     * Template method para obtener el componente Dagger.
-     * Las subclases implementan esto con su componente específico.
-     */
-    abstract fun getAppComponent(): AppComponent
-
-    /**
-     * Template method para inyectar la Application.
-     */
-    abstract fun injectApplication()
+abstract class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        setupDependencyInjection()
-        injectApplication()
-        onDependencyInjectionComplete()
+        initializeKoin()
+        DI.initialize(KoinDependencyProvider())
     }
 
     /**
-     * Configura todos los DIManagers.
-     * Las subclases pueden override para añadir más DIManagers.
+     * Subclasses must call startKoin with their specific module list.
      */
-    protected open fun setupDependencyInjection() {
-        val injector = createDependencyInjector()
-        
-        // Configurar DIManagers
-        DIManager.setDependencyInjector(injector)
-    }
-
-    /**
-     * Crea el injector que envuelve el componente Dagger.
-     */
-    private fun createDependencyInjector(): DependencyInjector<AppComponent> {
-        return object : DependencyInjector<AppComponent> {
-            override fun getAppComponent(): AppComponent = this@BaseApplication.getAppComponent()
-            override fun clear() {
-                // Limpiar el componente si es necesario
-            }
-        }
-    }
-
-    /**
-     * Hook que se llama después de configurar DI.
-     * Útil para inicializaciones que requieren dependencias.
-     */
-    protected open fun onDependencyInjectionComplete() {
-        // Override en subclases si se necesita
-    }
+    abstract fun initializeKoin()
 }

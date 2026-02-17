@@ -2,7 +2,6 @@ package com.example.poc.feature.b.domain
 
 import com.example.poc.data.model.Product
 import com.example.poc.data.repository.ProductRepository
-import javax.inject.Inject
 
 class GetProductsUseCase(
     private val productRepository: ProductRepository

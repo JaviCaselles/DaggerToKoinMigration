@@ -23,7 +23,6 @@ android {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
-    implementation(libs.dagger.core)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.koin.core)
     testImplementation(libs.junit)

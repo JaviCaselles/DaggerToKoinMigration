@@ -8,9 +8,8 @@ import com.example.poc.data.model.Product
 import com.example.poc.data.model.User
 import com.example.poc.feature.c.domain.AggregatedUseCase
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class AggregatedViewModel @Inject constructor(
+class AggregatedViewModel(
     private val aggregatedUseCase: AggregatedUseCase
 ) : ViewModel() {
 

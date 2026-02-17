@@ -4,9 +4,8 @@ import com.example.poc.data.model.Product
 import com.example.poc.data.model.User
 import com.example.poc.feature.a.domain.GetUsersUseCase
 import com.example.poc.feature.b.domain.GetProductsUseCase
-import javax.inject.Inject
 
-class AggregatedUseCase @Inject constructor(
+class AggregatedUseCase(
     private val getUsersUseCase: GetUsersUseCase,
     private val getProductsUseCase: GetProductsUseCase
 ) {

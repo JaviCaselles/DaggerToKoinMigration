@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -42,19 +41,6 @@ dependencies {
     implementation(project(":data:model"))
     implementation(project(":data:api"))
 
-    // Network (needed for Dagger components extending modules in app-legacy)
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.logging)
-
-    // Dagger
-    implementation(libs.dagger.core)
-    implementation(libs.dagger.android)
-    implementation(libs.dagger.android.support)
-    ksp(libs.dagger.compiler)
-    ksp(libs.dagger.android.processor)
-    
     // Koin
     implementation(libs.koin.android)
 }

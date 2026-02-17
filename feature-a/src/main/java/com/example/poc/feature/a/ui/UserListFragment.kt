@@ -6,43 +6,37 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-
-import com.example.poc.common.di.DI
-import androidx.lifecycle.ViewModelProvider
-import com.example.poc.common.di.ViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UserListFragment : Fragment() {
 
-    private val viewModelFactory: ViewModelFactory by lazy { DI.get() }
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[UserListViewModel::class.java]
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val viewModel: UserListViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return TextView(context).apply {
-            text = "User List Fragment - Loading..."
-            textSize = 18f
+        return TextView(requireContext()).apply {
+            textSize = 16f
             setPadding(32, 32, 32, 32)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+        val textView = view as TextView
+
         viewModel.users.observe(viewLifecycleOwner) { users ->
-            // Actualizar UI con usuarios
-            (view as? TextView)?.text = users.joinToString("\n\n") { 
-                "👤 ${it.name}\n   📧 ${it.email}" 
-            }
+            textView.text = users.joinToString("\n") { "${it.name} (${it.email})" }
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner) { loading ->
+            if (loading) textView.text = "Cargando usuarios..."
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let { textView.text = "Error: $it" }
         }
     }
 }

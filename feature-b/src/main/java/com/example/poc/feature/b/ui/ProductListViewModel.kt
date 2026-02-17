@@ -7,9 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.poc.data.model.Product
 import com.example.poc.feature.b.domain.GetProductsUseCase
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class ProductListViewModel @Inject constructor(
+class ProductListViewModel(
     private val getProductsUseCase: GetProductsUseCase
 ) : ViewModel() {
 
