@@ -10,8 +10,6 @@ import com.example.poc.common.di.KoinDependencyProvider
 import com.example.poc.common.di.ViewModelFactory
 import com.example.poc.data.api.di.networkKoinModule
 import com.example.poc.data.di.repositoryKoinModule
-import com.example.poc.data.repository.ProductRepository
-import com.example.poc.data.repository.UserRepository
 import com.example.poc.di.components.AppComponent
 import com.example.poc.di.components.DaggerAppComponent
 import com.example.poc.di.modules.ApiModule
@@ -41,8 +39,6 @@ class HmsApplication : BaseApplication() {
         // Inicializar Dagger Provider (Legacy/Fallback)
         val daggerProvider = DaggerDependencyProvider().configure {
             register(Context::class.java) { this@HmsApplication }
-            register(UserRepository::class.java) { component.userRepository() }
-            register(ProductRepository::class.java) { component.productRepository() }
             register(ViewModelFactory::class.java) { component.viewModelFactory() }
         }
 

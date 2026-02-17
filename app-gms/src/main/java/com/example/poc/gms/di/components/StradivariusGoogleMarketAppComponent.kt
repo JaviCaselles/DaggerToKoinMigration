@@ -2,7 +2,6 @@ package com.example.poc.gms.di.components
 
 import android.app.Application
 import com.example.poc.gms.GmsApplication
-import com.example.poc.data.di.RepositoryModule
 import com.example.poc.di.components.AppComponent
 import com.example.poc.di.modules.ApiModule
 import com.example.poc.di.modules.AppModule
@@ -20,7 +19,6 @@ import javax.inject.Singleton
     modules = [
         AndroidSupportInjectionModule::class,
         AppModule::class,
-        RepositoryModule::class,
         FeatureAModule::class,
         FeatureBModule::class,
         FeatureCModule::class
@@ -37,7 +35,6 @@ interface StradivariusGoogleMarketAppComponent : AppComponent {
 
         fun appModule(module: AppModule): Builder
         fun apiModule(module: ApiModule): Builder
-        fun repositoryModule(module: RepositoryModule): Builder
         fun useCaseModule(module: UseCaseModule): Builder
         
         fun build(): StradivariusGoogleMarketAppComponent

@@ -1,5 +1,6 @@
 package com.example.poc.feature.a.di
 
+import com.example.poc.common.di.DI
 import com.example.poc.data.repository.UserRepository
 import com.example.poc.feature.a.domain.GetUsersUseCase
 import com.example.poc.feature.a.ui.UserListFragment
@@ -24,7 +25,9 @@ class FeatureAModule {
     }
 
     @Provides
-    fun provideGetUsersUseCase(userRepository: UserRepository): GetUsersUseCase {
+    fun provideGetUsersUseCase(): GetUsersUseCase {
+        val userRepository: UserRepository = DI.get()
         return GetUsersUseCase(userRepository)
     }
 }
+

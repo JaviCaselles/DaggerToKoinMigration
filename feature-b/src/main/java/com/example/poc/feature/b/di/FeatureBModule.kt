@@ -1,5 +1,6 @@
 package com.example.poc.feature.b.di
 
+import com.example.poc.common.di.DI
 import com.example.poc.data.repository.ProductRepository
 import com.example.poc.feature.b.domain.GetProductsUseCase
 import com.example.poc.feature.b.ui.ProductListFragment
@@ -24,7 +25,9 @@ class FeatureBModule {
     }
 
     @Provides
-    fun provideGetProductsUseCase(productRepository: ProductRepository): GetProductsUseCase {
+    fun provideGetProductsUseCase(): GetProductsUseCase {
+        val productRepository: ProductRepository = DI.get()
         return GetProductsUseCase(productRepository)
     }
 }
+
